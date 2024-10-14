@@ -1,0 +1,33 @@
+name: Update Scoop Manifest on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Run update manifest script
+      run: python update_manifest.py
+
+    - name: Commit changes to manifest
+      run: |
+        git config --local user.email "your_email@example.com"
+        git config --local user.name "your_username"
+        git add path/to/your/local/Print.json  # Update the path to your local manifest
+        git commit -m "Update manifest for new release" || echo "No changes to commit"
+        git push
